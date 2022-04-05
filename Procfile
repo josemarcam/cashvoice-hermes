@@ -1,0 +1,1 @@
+test-dino: python application.py qrcode main

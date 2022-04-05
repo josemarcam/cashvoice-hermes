@@ -14,7 +14,8 @@ container = Container()
 def main():
     service : UserService  = container.user_service_container.user_service()
     create_user_model = CreateUserModel(name="teste",mac="123qw23e2",email="kkj@q23we.com2",key="kk23j2",teste="não é te23st2e",validity="vali23d1ity legla")
-    user_model = service.get_user(user_id=1)
+    user_model = service.create(user_model=create_user_model)
+    # user_model = service.get_user(user_id=1)
     print(user_model)
 
 @app.command()
