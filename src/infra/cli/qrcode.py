@@ -21,25 +21,21 @@ def main():
 @app.command()
 def wp_login():
     
-    kafka_service = CoreKafka()
-    consumer = kafka_service.consumer(kafka_service.get_client_topic(), mode='latest')
-    consumer.subscribe(kafka_service.get_client_topic())
-    typer.echo(f'Kafka topic {kafka_service.get_client_topic()}')
-    for msg in consumer:
-        data = msg.value.payload
+    # kafka_service = CoreKafka()
+    # consumer = kafka_service.consumer(kafka_service.get_client_topic(), mode='latest')
+    # consumer.subscribe(kafka_service.get_client_topic())
+    # typer.echo(f'Kafka topic {kafka_service.get_client_topic()}')
+    # for msg in consumer:
+    #     data = msg.value['payload']
 
-        service : UserService  = container.user_service_container.user_service()
-        whatsapp_service : WhatsAppService = container.whatsapp_service_container.whatsapp_service()
-        qrcode_service : QrcodeService = container.qrcode_service_container.qrcode_service()
-        user_model = service.get_user(**msg.value.payload)
-        
-        if user_model:
-            logged = whatsapp_service.make_login(user_model.id)
-            if logged:
-                print("logou!!!!!!")
+    service : UserService  = container.user_service_container.user_service()
+    whatsapp_service : WhatsAppService = container.whatsapp_service_container.whatsapp_service()
+    qrcode_service : QrcodeService = container.qrcode_service_container.qrcode_service()
+    
+    logged = whatsapp_service.make_login()
+    if logged:
+        print("logou!!!!!!")
                 
-        
-        
         # json_qrcode = {"qrcode":qrcode}
 
         # print(f"O qr code -> {qrcode}")

@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+
 
 class Instance:
     
@@ -22,12 +24,12 @@ class Instance:
                         'durable_storage': 2}
                     }
             options.add_experimental_option('prefs',prefs)
-            options.add_experimental_option("detach", True)
+            # options.add_experimental_option("detach", True)
             options.add_argument("start-maximized")
             # options.add_argument(f"user-data-dir=sessions/{folder}") 
             options.add_argument("disable-infobars")
             options.add_argument("user-agent==Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36")
-            options.add_argument("--headless")
+            # options.add_argument("--headless")
 
             caps = DesiredCapabilities().CHROME
             
@@ -37,7 +39,7 @@ class Instance:
                 PROXY = F"{PROXY_HOST}:{PROXY_PORT}"
                 options.add_argument('--proxy-server=%s' % PROXY)
             
-            self.driver = webdriver.Chrome(ChromeDriverManager().install(),options=options,desired_capabilities=caps)
+            self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=options)
             
             return True
         except Exception as e:

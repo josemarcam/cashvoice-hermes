@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 from src.shared.services.instance import Instance
 from src.domain.services.qrcode_service import QrcodeService
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 
 from src.config import environment
 
@@ -19,7 +20,7 @@ class WhatsAppService:
         browser = self.instance.get_driver
         browser.get("https://web.whatsapp.com/send/?phone=996061956")
     
-    def make_login(self, user_id:int):
+    def make_login(self, user_id:int = 1):
         self.access_whatsapp_url()
         _, first_qr = self.qrcode_service.get_qrcode()
         self.qrcode_service.send_kafka_qrcode(first_qr, user_id)
@@ -30,24 +31,17 @@ class WhatsAppService:
     
     def wait_wp_web(self, user_id:int):
 
-        found = False
-        while(found != True):
-            browser = self.instance.get_driver
-            try:
-                WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.CLASS_NAME, environment.get_item("LOGGED_WP_ELEMENT"))))
-                found = True
-            
-            except KeyboardInterrupt:
-                quit()
-            
-            except Exception as e:
-                print(f"Falha no erro: (falha ao identificar escaneamento do qrcode) {e}")
-                print(f"Reenviando Qrcode")
-                _, qrcode = self.qrcode_service.get_qrcode()
-                self.qrcode_service.send_kafka_qrcode(qrcode, user_id)
-
-                found = False
-        return found
+        browser = self.instance.get_driver
+        logged = False
+        c = 0
+        while not logged:
+            c += 1
+            local_storage_element = browser.execute_script("return window.localStorage.getItem(arguments[0]);", "WALid")
+            print("local_storage_element", c, local_storage_element)
+            if local_storage_element:
+                logged = True
+            sleep(2)
+        return True
     
     def _get_message(self):
         with open(self.msg_path,encoding="utf-8") as f:

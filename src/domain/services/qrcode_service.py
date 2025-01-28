@@ -23,12 +23,12 @@ class QrcodeService:
         while(found != True):
             try:
                 WebDriverWait(browser, 120).until(EC.presence_of_element_located((By.CLASS_NAME, environment.get_item("QRCODE_WP_ELEMENT"))))
-                element = browser.find_element_by_class_name(environment.get_item("QRCODE_WP_ELEMENT"))
+                element = browser.find_element(By.CLASS_NAME, environment.get_item("QRCODE_WP_ELEMENT"))
                 val = element.get_attribute("data-ref")
 
                 self.qrcode = val
                 if(self.qrcode == None):
-                    self.get_qrcode()
+                    return self.get_qrcode()
                 
                 found = True
             except KeyboardInterrupt:
